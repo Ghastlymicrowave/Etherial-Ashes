@@ -6,6 +6,24 @@ public class exeAction : Control
 	//TOGGLE TICKS AUTOMATICALLY
 	//BUTTON STARTS AND STEPS
 	// REWARD IS COLLECTED AUTOMATICALLY
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/*
+TODO:
+
+Make exe actions scriptable objs so that they have the option to provide:
+material (visible or hidden) rewards, 
+special log text, 
+unlock quests 
+an option to remove themselves when used a number of times
+call any void function (in some actions script, or game?) when triggered
+call any void function when clicked
+*/
+///////////////////////////////////////////////////////////////////////////////////
+
+
+	//
 	public string desc;
 	public game gameRef;
 	private ProgressBar bar;
@@ -17,13 +35,30 @@ public class exeAction : Control
 	public float baseStep = 10f;
 	public float tickVal = 0f;
 	public float stepVal = 10f;
-	public int[] upgradeResources;//stored as resource, step bonus, tick bonus, ...
+	public UpgradeResource[] upgradeResources;//stored as resource, step bonus, tick bonus, ...
+	public ResourceContainer[] requiredItems;
+	public ResourceContainer[] generateItems;
 
-	public int?[,] requiredItems;
-
-	public void Init(float tick, float step, bool run, bool rep,bool repUnlocked, string inText,string description, int[] upgrades){
+	public void CreateFromTemplate(string id){
+		exeActionTemplate temp = gameRef.ActionData[id];
+		desc = temp.desc;
+		running = temp.running;
+		repeat = temp.repeat;
+		baseStep = temp.baseStep;
+		baseTick = temp.baseTick;
+		tickVal = temp.baseTick;
+		stepVal = temp.baseStep;
+		upgradeResources = temp.upgradeResources;
+		requiredItems = temp.requiredItems;
+		generateItems = temp.generateItems;
+		button.Text = temp.name;
+		CheckUpgrade();
+	}
+	public void Init(float tick, float step, bool run, bool rep,bool repUnlocked, string inText,string description, UpgradeResource[] upgrades){
 		tickVal = tick;
 		stepVal = step;
+		baseTick=tick;
+		baseStep=step;
 		running = run;
 		repeat = rep;
 		if (!repUnlocked){
@@ -31,8 +66,6 @@ public class exeAction : Control
 		}
 		button.Text = inText;
 		desc = description;
-		baseTick=tick;
-		baseStep=step;
 		upgradeResources = upgrades;
 		CheckUpgrade();
 	}
@@ -44,7 +77,7 @@ public class exeAction : Control
 		button = (Button)GetNode("HBoxContainer/OptionButton");
 		bar = (ProgressBar)GetNode("HBoxContainer/ProgressBar");
 		gameRef = (game)GetTree().Root.GetNode("Game");
-		requiredItems = new int?[0,0];
+		requiredItems = new ResourceContainer[]{};
 	}
 
 	public void SetRep(bool RepEnabled){
@@ -54,12 +87,10 @@ public class exeAction : Control
 	public void CheckUpgrade(){
 		stepVal = baseStep;
 		tickVal = baseTick;
-		for(int i = 0; i < Mathf.FloorToInt( upgradeResources.Length/3f);i++){
-			int amt = gameRef.resources[upgradeResources[i*3]];
-			int stepUpgrade = upgradeResources[i*3+1];
-			int tickUpgrade = upgradeResources[i*3+2];
-			stepVal += stepUpgrade*amt;
-			tickVal += tickUpgrade*amt;
+		for(int i = 0; i < upgradeResources.Length;i++){
+			float amt = gameRef.GetResourceAmount(upgradeResources[i].id);
+			stepVal += upgradeResources[i].stepUpgrade*amt;
+			tickVal += upgradeResources[i].tickUpgrade*amt;
 		}
 		UpdateTooltip();
 	}
@@ -73,16 +104,22 @@ public class exeAction : Control
 		if (running && !game.paused){
 			bar.Value += tickVal * delta;
 			if (bar.Value >= bar.MaxValue){
+				bar.Value = 0f;
+				GD.Print("Tick completed, bar is at ", bar.Value);
 				barCompleted();
 			}
 		}
 	}
 
 	public void barCompleted(){
+		GD.Print("Bar completed");
 		bar.Value = 0f;
 		if (!repeat){
 			running=false;
-			EmitSignal(nameof(exeActionComplete));
+		}
+		EmitSignal(nameof(exeActionComplete));
+		if(generateItems!=null){
+			gameRef.addResources(generateItems);
 		}
 	}
 	private void _on_CheckButton_toggled(bool button_pressed)
@@ -99,14 +136,17 @@ public class exeAction : Control
 		CheckUpgrade();
 		if (!game.paused){
 			if (running){
-				bar.Value+=stepVal;
+				bar.Value= bar.Value + stepVal;
 				if (bar.Value >= bar.MaxValue){
+					bar.Value = 0f;
+					GD.Print("Step Completed, bar is at ", bar.Value);
 					barCompleted();
 				}
 			}else{
 				if (requiredItems.Length>0){
 					GD.Print(requiredItems.ToString());
 					if (IsCraftable()){
+						GD.Print("Triggering RemoveCraftItems");
 						RemoveCraftItems();
 						running = true;
 						bar.Value+=stepVal;
@@ -121,8 +161,8 @@ public class exeAction : Control
 	}
 
 	public bool IsCraftable(){//will crash if required items are not defined
-		for(int i = 0; i < requiredItems.Length-1;i++){
-			if (gameRef.resources[(int)requiredItems[i,0]]<requiredItems[i,1]){
+		for(int i = 0; i < requiredItems.Length;i++){
+			if(gameRef.GetResourceAmount(requiredItems[i].id)<requiredItems[i].value){
 				return false;
 			}
 		}
@@ -134,9 +174,9 @@ public class exeAction : Control
 		if (requiredItems==null){return outstring;}
 		for(int i = 0; i < requiredItems.Length-1;i++){
 			outstring+="\n";
-			outstring+=game.GetEnumItemName((int)requiredItems[i,0]) + ": "+gameRef.resources[(int)requiredItems[i,0]].ToString()+"/"+ requiredItems[i,1].ToString();
-
-			if (gameRef.resources[(int)requiredItems[i,0]]<requiredItems[i,1]){
+			outstring+= gameRef.ResData[requiredItems[i].id];
+			outstring+=": " + gameRef.Res[requiredItems[i].id].ToString() + "/" + requiredItems[i].value.ToString();
+			if (gameRef.Res[requiredItems[i].id] < requiredItems[i].value){
 				outstring+=" MISSING REQUIREMENTS";
 			}
 		}
@@ -150,15 +190,15 @@ public class exeAction : Control
 			if (stepVal == baseStep){
 				outstr+="percent progress per click: "+stepVal.ToString()+"%";
 			}else{
-				outstr+="percent progress per second: "+stepVal.ToString()+"% ("+baseStep.ToString()+"% +"+(stepVal-baseStep).ToString()+"% bonus)";
+				outstr+="percent progress per click: "+stepVal.ToString()+"% ("+baseStep.ToString()+"% +"+(stepVal-baseStep).ToString()+"% bonus)";
 			}
 		}
 		if (tickVal!=0){
 			outstr+="\n";
 			if (tickVal == baseTick){
-				outstr+="percent progress per click: "+tickVal.ToString()+"%";
+				outstr+="percent progress per second: "+tickVal.ToString()+"%";
 			}else{
-				outstr+="percent progress per second: "+tickVal.ToString()+"% ("+baseTick.ToString()+"% +"+(tickVal-baseTick).ToString()+"% bonus)";
+				outstr+="percent progress per second: "+tickVal.ToString()+"% ( +"+((tickVal-baseTick)/baseTick*100f).ToString()+"% bonus)";
 			}
 		}
 		return outstr;	
@@ -167,8 +207,10 @@ public class exeAction : Control
 	//Cutting down trees step bonus = min(arms, axes), tick bonus = arms+axes something like that??
 
 	public void RemoveCraftItems(){//will crash if required items are not defined
+		GD.Print("removing craft items");
 		for(int i = 0; i < requiredItems.Length-1;i++){
-			gameRef.resources[(int)requiredItems[i,0]]-=(int)requiredItems[i,1];
+			ResourceContainer res = new ResourceContainer(requiredItems[i].id,-requiredItems[i].value);
+			gameRef.addResource(res,true);
 		}
 		gameRef.UpdateTree();
 	}
@@ -190,3 +232,12 @@ public class exeAction : Control
 
 
 
+//TODO
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+
+convert quests into scriptable objs
+convert exe actions into scriptable objs
+
+*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,19 +1,33 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://game.cs" type="Script" id=1]
-[ext_resource path="res://inventory.cs" type="Script" id=2]
-[ext_resource path="res://Quests.cs" type="Script" id=3]
-[ext_resource path="res://questList.cs" type="Script" id=4]
+[ext_resource path="res://scripts/game.cs" type="Script" id=1]
+[ext_resource path="res://scripts/inventory.cs" type="Script" id=2]
+[ext_resource path="res://scripts/Quests.cs" type="Script" id=3]
+[ext_resource path="res://ConsoleTheme.tres" type="Theme" id=5]
+[ext_resource path="res://resources/res_metalChunk.tres" type="Resource" id=6]
+[ext_resource path="res://actions/exe_scavenge.tres" type="Resource" id=7]
+[ext_resource path="res://resources/res_glassBead.tres" type="Resource" id=8]
+[ext_resource path="res://quests/qst_intro2.tres" type="Resource" id=9]
+[ext_resource path="res://resources/res_makeshiftApendage.tres" type="Resource" id=10]
+[ext_resource path="res://resources/res_woodenScrap.tres" type="Resource" id=11]
+[ext_resource path="res://resources/res_metalPlate.tres" type="Resource" id=12]
+[ext_resource path="res://resources/res_reboot.tres" type="Resource" id=13]
+[ext_resource path="res://resources/res_scrap.tres" type="Resource" id=14]
+[ext_resource path="res://quests/qst_intro1.tres" type="Resource" id=15]
 
 [node name="Game" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource( 5 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+importResources = [ ExtResource( 8 ), ExtResource( 10 ), ExtResource( 6 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 11 ) ]
+importQuests = [ ExtResource( 15 ), ExtResource( 9 ) ]
+importActions = [ ExtResource( 7 ) ]
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 anchor_left = 0.01
@@ -32,48 +46,46 @@ margin_right = 1880.0
 margin_bottom = 1040.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2/PanelContainer"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1873.0
-margin_bottom = 1033.0
+margin_right = 1880.0
+margin_bottom = 1040.0
 grow_horizontal = 2
 grow_vertical = 2
 custom_constants/separation = 10
 
 [node name="InventoryAndLog" type="MarginContainer" parent="MarginContainer2/PanelContainer/HBoxContainer"]
-margin_right = 615.0
-margin_bottom = 1026.0
+margin_right = 620.0
+margin_bottom = 1040.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2/PanelContainer/HBoxContainer/InventoryAndLog"]
-margin_right = 615.0
-margin_bottom = 1026.0
+margin_right = 620.0
+margin_bottom = 1040.0
 
 [node name="inventory" type="Tree" parent="MarginContainer2/PanelContainer/HBoxContainer/InventoryAndLog/VBoxContainer"]
-margin_right = 615.0
-margin_bottom = 511.0
+margin_right = 620.0
+margin_bottom = 518.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
 
 [node name="TextLog" type="RichTextLabel" parent="MarginContainer2/PanelContainer/HBoxContainer/InventoryAndLog/VBoxContainer"]
-margin_top = 515.0
-margin_right = 615.0
-margin_bottom = 1026.0
+margin_top = 522.0
+margin_right = 620.0
+margin_bottom = 1040.0
 size_flags_vertical = 3
 scroll_following = true
 
 [node name="Action" type="MarginContainer" parent="MarginContainer2/PanelContainer/HBoxContainer"]
-margin_left = 625.0
-margin_right = 1240.0
-margin_bottom = 1026.0
+margin_left = 630.0
+margin_right = 1250.0
+margin_bottom = 1040.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TabContainer" type="TabContainer" parent="MarginContainer2/PanelContainer/HBoxContainer/Action"]
-margin_right = 615.0
-margin_bottom = 1026.0
+margin_right = 620.0
+margin_bottom = 1040.0
 tab_align = 0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -82,10 +94,8 @@ __meta__ = {
 [node name="Actions" type="Tabs" parent="MarginContainer2/PanelContainer/HBoxContainer/Action/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_top = 31.0
+margin_bottom = -2.0
 tab_align = 0
 
 [node name="actionPanel" type="VBoxContainer" parent="MarginContainer2/PanelContainer/HBoxContainer/Action/TabContainer/Actions"]
@@ -103,10 +113,8 @@ __meta__ = {
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_top = 31.0
+margin_bottom = -2.0
 tab_align = 0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -124,15 +132,15 @@ __meta__ = {
 }
 
 [node name="Quest" type="MarginContainer" parent="MarginContainer2/PanelContainer/HBoxContainer"]
-margin_left = 1250.0
-margin_right = 1866.0
-margin_bottom = 1026.0
+margin_left = 1260.0
+margin_right = 1880.0
+margin_bottom = 1040.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TabContainer" type="TabContainer" parent="MarginContainer2/PanelContainer/HBoxContainer/Quest"]
-margin_right = 616.0
-margin_bottom = 1026.0
+margin_right = 620.0
+margin_bottom = 1040.0
 tab_align = 0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -141,10 +149,8 @@ __meta__ = {
 [node name="Quests" type="Tabs" parent="MarginContainer2/PanelContainer/HBoxContainer/Quest/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_top = 31.0
+margin_bottom = -2.0
 
 [node name="questPanel" type="VBoxContainer" parent="MarginContainer2/PanelContainer/HBoxContainer/Quest/TabContainer/Quests"]
 anchor_right = 1.0
@@ -158,14 +164,10 @@ __meta__ = {
 }
 
 [node name="questTree" type="Tree" parent="MarginContainer2/PanelContainer/HBoxContainer/Quest/TabContainer/Quests/questPanel"]
-margin_right = 588.0
-margin_bottom = 970.0
-size_flags_horizontal = 3
+margin_right = 600.0
+margin_bottom = 987.0
 size_flags_vertical = 3
 custom_constants/scroll_border = 12
 script = ExtResource( 3 )
-
-[node name="questList" type="Node" parent="."]
-script = ExtResource( 4 )
 
 [connection signal="button_pressed" from="MarginContainer2/PanelContainer/HBoxContainer/Quest/TabContainer/Quests/questPanel/questTree" to="MarginContainer2/PanelContainer/HBoxContainer/Quest/TabContainer/Quests/questPanel/questTree" method="_on_questTree_button_pressed"]

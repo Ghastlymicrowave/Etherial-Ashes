@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://exeAction.cs" type="Script" id=1]
+[ext_resource path="res://scripts/exeAction.cs" type="Script" id=1]
 
 [node name="HBoxContainer" type="MarginContainer"]
 margin_right = 384.0

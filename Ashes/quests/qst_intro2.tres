@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://scripts/scriptable objs/QuestTemplate.cs" type="Script" id=1]
+[ext_resource path="res://itemCollections/item_5scrap.tres" type="Resource" id=2]
+
+[resource]
+script = ExtResource( 1 )
+_name = "CONSTRUCT MAKESHIFT LIMBS"
+_overriteId = "intro_2"
+_nextQuestName = ""
+_requirements = [ ExtResource( 2 ) ]
+_rewards = null
+_desc = PoolStringArray( "CONSTRUCT TEMPORARY ", "LIMBS FROM ", "SCAVENGED MATERIAL." )
+_consume = false
+_completeFunction = ""
+_autocomplete = false
+_completeable = false

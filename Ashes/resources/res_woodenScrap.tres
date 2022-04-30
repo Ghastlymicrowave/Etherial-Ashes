@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://scripts/scriptable objs/GameResource.cs" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+_hidden = false
+_name = "Wooden Scrap"
+_desc = "Wooden rubble. With enough, these could be compressed into a sort of plywood."
+_identifierOverride = ""

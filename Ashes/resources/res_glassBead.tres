@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://scripts/scriptable objs/GameResource.cs" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+_hidden = false
+_name = "Glass Bead"
+_desc = "Pristine and small glass beads, seemingly untouched."
+_identifierOverride = ""
