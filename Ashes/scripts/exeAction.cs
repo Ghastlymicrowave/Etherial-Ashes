@@ -172,13 +172,22 @@ call any void function when clicked
 	public string RequiredItemsText(){
 		string outstring = "";
 		if (requiredItems==null){return outstring;}
-		for(int i = 0; i < requiredItems.Length-1;i++){
-			outstring+="\n";
-			outstring+= gameRef.ResData[requiredItems[i].id];
-			outstring+=": " + gameRef.Res[requiredItems[i].id].ToString() + "/" + requiredItems[i].value.ToString();
-			if (gameRef.Res[requiredItems[i].id] < requiredItems[i].value){
-				outstring+=" MISSING REQUIREMENTS";
+		for(int i = 0; i < requiredItems.Length;i++){
+			GD.Print("required item: "+i.ToString()+" requiredItems length: " + requiredItems.Length.ToString());
+			GD.Print("required item ID: "+requiredItems[i].id);
+			GameResource resVal;
+			float amt = 0f;
+			if(!gameRef.ResData.TryGetValue(requiredItems[i].id, out resVal) || !gameRef.Res.TryGetValue(requiredItems[i].id,out amt)){
+				outstring += "ERROR READING ITEM REQUIREMENTS";
+			}else{
+				outstring+="\n"; 
+				outstring+= resVal.name;
+				outstring+=": " + amt.ToString() + "/" + requiredItems[i].value.ToString();
+				if (gameRef.Res[requiredItems[i].id] < requiredItems[i].value){
+					outstring+=" MISSING REQUIREMENTS";
+				}
 			}
+			
 		}
 		return outstring;
 	}
@@ -207,10 +216,11 @@ call any void function when clicked
 	//Cutting down trees step bonus = min(arms, axes), tick bonus = arms+axes something like that??
 
 	public void RemoveCraftItems(){//will crash if required items are not defined
-		GD.Print("removing craft items");
-		for(int i = 0; i < requiredItems.Length-1;i++){
+		GD.Print("removing craft items, items: "+requiredItems.Length.ToString());
+		for(int i = 0; i < requiredItems.Length;i++){
 			ResourceContainer res = new ResourceContainer(requiredItems[i].id,-requiredItems[i].value);
 			gameRef.addResource(res,true);
+			GD.Print("removing, id:"+ requiredItems[i].id.ToString() + ", amount to remove: "+ requiredItems[i].value.ToString());
 		}
 		gameRef.UpdateTree();
 	}

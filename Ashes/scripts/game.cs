@@ -108,15 +108,15 @@ public class game : Control
 		TabContainer craftTab = (TabContainer)craftingPanel.GetParent().GetParent();
 		craftTab.SetTabDisabled(1,false);
 		craftTab.SetTabTitle(1,"crafting");
-		/*
-		NewCraft("CraftChunk","Metal Chunk","Combine metal scraps into a metal chunk using the heat of nearby fires.",
-		0f,5f,false,false, GenRequirements((int)RESOURCES.Scrap,2),ToArray((int)RESOURCES.Makeshift_Apendage,0,10)
-		);
-		NewCraft("CraftApendage", "Makeshift Apendage","Simple apendages can be welded together and when fed though with internal wiring, can become rudimentary limbs",
-		0f,5f,false,false, GenRequirements((int)RESOURCES.Metal_Chunk,3),ToArray((int)RESOURCES.Makeshift_Apendage,0,10)
-		);*/
+		NewCraft("Craft Chunk");
 		Log("Now that I can see, It's clear now that i'm missing an arm or two. That explains why it was so hard to pick up bits of rubble. I can probably make myself some makeshift arms in the same way I repared my opics.");
 	}
+
+	public void qst_enableApendageCraft(){
+		NewCraft("Craft Apendage");
+		Log("By slamming chunks of metal together, I can magnetize them and create makeshift limbs. These should speed up the process of gathering more scrap.");
+	}
+
 	/*
 	public void act_scavenge(){
 		addResource("Scrap",1);
@@ -311,9 +311,9 @@ public class game : Control
 	}
 
 	void GenQuestDict(){
-            foreach (QuestTemplate res in importQuests){
+			foreach (QuestTemplate res in importQuests){
 				GD.Print("loading quest: ",res.id);
-                questData.Add(res.id,res);
-            }
-	    }
+				questData.Add(res.id,res);
+			}
+		}
 }

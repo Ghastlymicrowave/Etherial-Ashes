@@ -12,6 +12,6 @@ _requirements = [ ExtResource( 2 ) ]
 _rewards = null
 _desc = PoolStringArray( "CONSTRUCT TEMPORARY ", "LIMBS FROM ", "SCAVENGED MATERIAL." )
 _consume = false
-_completeFunction = ""
+_completeFunction = "qst_enableApendageCraft"
 _autocomplete = false
 _completeable = false

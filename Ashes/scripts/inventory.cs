@@ -24,12 +24,13 @@ public class inventory : Tree
             float amt = gameRef.Res[key];
             GameResource data = gameRef.ResData[key];
             TreeItem item;
-            if (amt>0 && !data.hidden){
+            if (!data.hidden){
                 if(!resources.TryGetValue(key,out item)){
                     resources.Add(key,CreateItem());
                     item = resources[key];
                     GD.Print("adding new item with key: ",key);
                 }
+                GD.Print("updating item inventory view");
                 item.SetText(0,data.name+" "+amt);
             }else{
                 if(resources.TryGetValue(key,out item)){

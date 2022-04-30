@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource( 1 )
 _hidden = false
-_name = ""
+_name = "Makeshift Apendage"
 _desc = ""
 _identifierOverride = ""

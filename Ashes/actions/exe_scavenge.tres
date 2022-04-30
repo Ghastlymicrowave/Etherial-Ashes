@@ -1,8 +1,8 @@
 [gd_resource type="Resource" load_steps=4 format=2]
 
 [ext_resource path="res://scripts/scriptable objs/exeActionTemplate.cs" type="Script" id=1]
-[ext_resource path="res://itemCollections/upgrade_scavenge.tres" type="Resource" id=2]
 [ext_resource path="res://itemCollections/item_1scrap.tres" type="Resource" id=3]
+[ext_resource path="res://upgrades/upgrade_scavenge.tres" type="Resource" id=4]
 
 [resource]
 script = ExtResource( 1 )
@@ -15,6 +15,6 @@ _repUnlocked = false
 _repeat = false
 _baseTick = 0.0
 _baseStep = 10.0
-_upgradeResources = [ ExtResource( 2 ) ]
-_requiredItems = null
+_upgradeResources = [ ExtResource( 4 ) ]
+_requiredItems = [  ]
 _generateItems = [ ExtResource( 3 ) ]
